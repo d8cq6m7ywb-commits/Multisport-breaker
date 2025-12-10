@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multisport FIT Splitter | Yousuli Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Main styles for the tool -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js for sanity-check graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Leaflet map (no integrity attributes so the file:// page doesn’t choke) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="tool-card">
+      <header class="tool-header">
+        <div class="tool-title-row">
+          <h1 class="tool-title">Multisport FIT Splitter</h1>
+          <div class="lab-tag">
+            <span class="lab-dot"></span>
+            <span class="lab-text">YOUSULI LAB</span>
+          </div>
+        </div>
+        <p class="tool-subtitle">
+          Upload a multisport <code>.fit</code> file, adjust leg boundaries,
+          and export JSON (debug) or per-leg TCX for TrainingPeaks / WKO.
+        </p>
+      </header>
+
+      <!-- 1. Upload & sessions -->
+      <section class="tool-section">
+        <h2 class="section-title">1. Upload &amp; sessions</h2>
+
+        <div class="upload-row">
+          <div class="upload-input">
+            <label for="fitFile" class="field-label">Upload multisport .FIT file</label>
+            <input type="file" id="fitFile" accept=".fit" />
+          </div>
+          <div id="status" class="status-text">No file loaded.</div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="block-title">Detected sessions (raw)</h3>
+          <p class="block-help">
+            These come directly from session messages in the FIT file.
+            They are used as the initial boundaries for the legs.
+          </p>
+
+          <div class="table-wrapper">
+            <table class="data-table" id="sessionTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Sport</th>
+                  <th>Subsport</th>
+                  <th>Start time (raw)</th>
+                  <th>End time (raw)</th>
+                  <th>Duration (HH:MM:SS)</th>
+                </tr>
+              </thead>
+              <tbody id="sessionTableBody">
+                <!-- Filled by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Chart, route & legs -->
+      <section class="tool-section">
+        <h2 class="section-title">2. Chart, route &amp; legs</h2>
+
+        <div class="section-block">
+          <h3 class="block-title">Sanity-check chart</h3>
+          <p class="block-help">
+            Power (blue) and heart rate (red) over time.
+            Dashed vertical lines mark leg boundaries. Drag them left/right to refine transitions.
+          </p>
+          <canvas id="mainChart" class="chart-canvas"></canvas>
+        </div>
+
+        <div class="section-block">
+          <h3 class="block-title">Route map</h3>
+          <p class="block-help">
+            Full GPS track from the file (if coordinates are present).
+            For quick route sanity-check. Zoom and pan as needed.
+          </p>
+          <div id="routeMap" class="route-map">
+            <div class="route-map-placeholder">
+              Load a multisport file with GPS positions to see the map.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="block-title">Legs for splitting</h3>
+          <p class="block-help">
+            Legs are derived from sessions. Select one <strong>active leg</strong> for TCX export.
+            Drag the dashed vertical lines on the chart to adjust transitions.
+          </p>
+
+          <div class="table-wrapper">
+            <table class="data-table" id="legTable">
+              <thead>
+                <tr>
+                  <th>Active</th>
+                  <th>#</th>
+                  <th>Sport</th>
+                  <th>Subsport</th>
+                  <th>Transition?</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody id="legTableBody">
+                <!-- Filled by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Export -->
+      <section class="tool-section">
+        <h2 class="section-title">3. Export</h2>
+
+        <p class="block-help">
+          JSON includes <strong>all legs</strong> and <strong>all record fields</strong> (for debugging).
+          TCX exports the <strong>selected leg only</strong> and includes power, cadence, speed,
+          heart rate, altitude, GPS, and temperature (if present in the original data).
+        </p>
+
+        <div class="export-row">
+          <button id="downloadJsonBtn" type="button" class="btn btn-ghost">
+            Download legs JSON (debug)
+          </button>
+          <button id="downloadTcxBtn" type="button" class="btn btn-primary">
+            Download selected leg as TCX
+          </button>
+        </div>
+        <div id="exportStatus" class="status-text status-text--export"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Load FitParser as an ES module and expose it on window -->
+  <script type="module">
+    import FitParser from "https://esm.sh/fit-file-parser@1.21.0";
+    window.FitParser = FitParser;
+  </script>
+
+  <!-- Main logic -->
+  <script src="multisport-breaker.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "multisport-breaker",
+  "version": "3.0.0",
+  "description": "Multisport FIT file splitter v3 - 4-layer leg detection, diagnostics, sport relabeling, timeline, TCX + FIT export",
+  "type": "module",
+  "scripts": {
+    "export-tcx": "node export-legs-tcx.js"
+  },
+  "keywords": ["fit", "triathlon", "multisport", "tcx", "wko5", "fit-export"],
+  "author": "Yousuli Lab",
+  "license": "ISC"
+}

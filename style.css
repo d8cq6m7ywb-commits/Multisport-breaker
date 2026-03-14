@@ -1,4 +1,4 @@
-/* ---- Global page layout ---- */
+/* ---- Multisport FIT Splitter v3.0 — Yousuli Lab ---- */
 
 :root {
   --bg-page: #050712;
@@ -14,6 +14,7 @@
   --accent-soft: rgba(122, 240, 184, 0.14);
   --accent-strong: #41d28f;
   --danger: #ff5b7a;
+  --warning: #ffc857;
   --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
 }
@@ -85,6 +86,18 @@ body {
   margin: 6px 0 0;
   font-size: 0.92rem;
   color: var(--text-muted);
+}
+
+.version-tag {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
 }
 
 /* ---- Yousuli lab tag ---- */
@@ -179,6 +192,119 @@ body {
   margin-top: 8px;
 }
 
+/* ---- #13: File size warning ---- */
+
+.file-warning {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 200, 87, 0.1);
+  border: 1px solid rgba(255, 200, 87, 0.3);
+  color: var(--warning);
+  font-size: 0.84rem;
+}
+
+/* ---- #3: Diagnostics panel ---- */
+
+.diagnostics-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(15, 18, 36, 0.7);
+  border: 1px solid var(--border-soft);
+}
+
+.diag-card {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(21, 25, 51, 0.6);
+  border: 1px solid rgba(38, 42, 64, 0.6);
+}
+
+.diag-card--wide {
+  grid-column: 1 / -1;
+}
+
+.diag-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.diag-value {
+  font-size: 0.84rem;
+  font-weight: 550;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.diag-warning {
+  color: var(--warning);
+  font-weight: 500;
+}
+
+/* ---- #4/#9: Timeline bar ---- */
+
+.timeline-bar {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(4, 6, 18, 0.8);
+  border: 1px solid var(--border-soft);
+  position: relative;
+  margin-bottom: 6px;
+  min-height: 32px;
+}
+
+.timeline-block {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+  position: relative;
+  min-width: 2px;
+}
+
+.timeline-block:hover {
+  filter: brightness(1.25);
+}
+
+.timeline-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #000;
+  text-shadow: 0 0 3px rgba(255,255,255,0.3);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 2px;
+}
+
+.timeline-boundary {
+  width: 6px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background 0.1s;
+  z-index: 2;
+}
+
+.timeline-boundary:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
 /* ---- Tables ---- */
 
 .table-wrapper {
@@ -187,6 +313,7 @@ body {
   overflow: hidden;
   border: 1px solid var(--border-soft);
   background: rgba(4, 6, 18, 0.8);
+  overflow-x: auto;
 }
 
 .data-table {
@@ -224,16 +351,38 @@ body {
   background: rgba(71, 138, 255, 0.14);
 }
 
-/* Radio column */
+/* Radio/checkbox column */
 
 .leg-radio-cell {
   text-align: center;
-  width: 50px;
+  width: 40px;
 }
 
 .leg-radio {
   width: 14px;
   height: 14px;
+}
+
+/* ---- #2: Sport override select ---- */
+
+.sport-select {
+  background: rgba(8, 10, 22, 0.9);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.sport-select:hover {
+  border-color: var(--accent);
+}
+
+.sport-select:focus {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
 }
 
 /* ---- Chart ---- */
@@ -247,6 +396,12 @@ body {
   background: radial-gradient(circle at top, #151933, #050712);
   border-radius: 10px;
   border: 1px solid var(--border-soft);
+}
+
+.ds-indicator {
+  font-size: 0.78rem;
+  color: var(--warning);
+  font-style: italic;
 }
 
 /* ---- Map ---- */
@@ -341,7 +496,17 @@ body {
     height: 260px;
   }
 
-  .table-wrapper {
-    overflow-x: auto;
+  .diagnostics-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .timeline-bar {
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .diagnostics-panel {
+    grid-template-columns: 1fr;
   }
 }
